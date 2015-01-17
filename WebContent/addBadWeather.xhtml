@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="template/homeTemplate.xhtml">
+
+	<ui:define name="title">
+		<title>#{loc.ADDBADWEATHER_PAGE_TITLE}</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form>
+			<p:fieldset legend="#{loc.ADD_BAD_WEATHER}"
+				style="margin-bottom:20px;align:right;">
+				<center>
+					<p:panelGrid id="idPanellogin" style="border:none;">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="#{loc.BAD_WEATHER_NAME}" />
+							</p:column>
+							<p:column>
+								<p:inputText id="name" value="#{badWeatherHandlerBean.name}"
+									required="true"
+									requiredMessage="#{loc.BAD_WEATHER_NAME_IS_REQUIRED}" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="#{loc.BAD_WEATHER_TYPE}" />
+							</p:column>
+							<p:column>
+
+
+
+								<p:selectOneMenu value="#{badWeatherHandlerBean.weatherType}"
+									requiredMessage="#{loc.BAD_WEATHER_TYPE_IS_REQUIRED}"
+									converter="#{genericMarkedEntityConverter}"
+									converterMessage="#{loc.ERROR_RELARED_TO_EVENT_TYPE}"
+									effect="drop" style="min-width: 200px" required="true">
+									<f:selectItems value="#{badWeatherHandlerBean.weatherTypes}"
+										var="weatherType" itemLabel="#{weatherType.name}"
+										itemValue="#{weatherType}" />
+								</p:selectOneMenu>
+
+
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="#{loc.MIN_DEGREE}" />
+							</p:column>
+							<p:column>
+								<p:spinner id="min" value="#{badWeatherHandlerBean.minDegree}"
+									min="-500" max="500" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<p:outputLabel value="#{loc.MAX_DEGREE}" />
+							</p:column>
+							<p:column>
+								<p:spinner id="max" value="#{badWeatherHandlerBean.maxDegree}"
+									min="-500" max="500" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column colspan="2">
+								<center>
+									<p:commandButton value="#{loc.ADD_BAD_WEATHER}"
+										update=":growlForm"
+										actionListener="#{badWeatherHandlerBean.addNewBadWeather()}" />
+								</center>
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</center>
+			</p:fieldset>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

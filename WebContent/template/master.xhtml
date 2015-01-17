@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<ui:insert name="title">Default Title</ui:insert>
+
+	<h:outputStylesheet library="css" name="style.css" />
+
+
+
+</h:head>
+<f:view contentType="text/html">
+
+	<h:body style="#{loc.dir}">
+		<div
+			style="width: 100%; height: 100%; position: fixed; left: 0px; top: 0px; z-index: -9999;">
+			<p:graphicImage name="background.png" library="images"
+				style="width:100%;height:100%;" />
+		</div>
+		<h:form id="growlForm">
+			<p:growl />
+		</h:form>
+		<div id="mainDiv">
+
+			<table style="height: 630px; border:none !important  width: 1320px;">
+				<tr>
+					<td rowspan="4" style="width: 5px; background-color: #3d0f01;"></td>
+					<td style="height: 10%; background-color: black;" id="headerDiv">
+						<ui:include src="header.xhtml"></ui:include>
+					</td>
+					<td rowspan="4" style="width: 5px; background-color: #3d0f01;"></td>
+				</tr>
+				<tr>
+					<td
+						style="height: 80%; padding: 0px 25px 0px 25px; vertical-align: top;">
+						<ui:insert name="content">Default Content</ui:insert>
+					</td>
+				</tr>
+
+			</table>
+
+		</div>
+	</h:body>
+</f:view>
+</html>

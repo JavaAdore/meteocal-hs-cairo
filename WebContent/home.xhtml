@@ -1,0 +1,312 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="template/homeTemplate.xhtml">
+
+	<ui:define name="title">
+		<title>#{loc.HOME_TITLE}</title>
+	</ui:define>
+
+
+	<ui:define name="content">
+
+
+		<center>
+			<table border="0" dir="#{loc.dir}">
+				<tr>
+					<td><h:form id="eventForm">
+
+							<p:remoteCommand name="update" update="@form" />
+							<p:fieldset legend="#{loc.HOME_TITLE}" toggleable="true"
+								toggleSpeed="500" style="margin-bottom:20px;align:right;">
+								<h:panelGrid>
+									<p:tabView id="tableView">
+
+										<p:tab title="#{loc.INTERCEPTING_EVENTED_CREATED_BY_OWNER}"
+											rendered="#{homeHandlerBean.eventCreatedByCurrentUser.size()>0}">
+											<p:dataTable var="event"
+												widgetVar="eventCreatedByCurrentUser"
+												value="#{homeHandlerBean.eventCreatedByCurrentUser}">
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_TITLE}">
+													<p:outputLabel value="#{event.eventTitle}" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_TYPE}">
+													<p:outputLabel value="#{event.eventType.name}" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_START_DATE}">
+													<p:outputLabel value="#{event.startDate}">
+														<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+													</p:outputLabel>
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_END_DATE}">
+													<p:outputLabel value="#{event.startDate}">
+														<f:convertDateTime pattern="MM/dd/yyyy HH:mm" />
+													</p:outputLabel>
+												</p:column>
+												<p:column headerText="#{loc.DESCRIPTION}">
+													
+													<p:panel id="desc" style="border:none !important"
+														rendered="#{ event.description!=null }">
+														<center>
+															<img src="resources/images/exclamation-mark.png" width="30"
+																height="30" />
+														</center>
+														<p:tooltip for="desc"
+														value="#{event.description}"
+														showEffect="clip" hideEffect="explode"  />	
+														</p:panel>
+												</p:column>
+												
+												<p:column headerText="#{loc.WEATHER_STATUS}">
+													<p:panel id="badWeather" style="border:none !important"
+														rendered="#{ event.weatherStatus.isBadWeather eq 1}">
+														<center>
+															<img src="resources/images/sad.png" width="30"
+																height="30" />
+														</center>
+													</p:panel>
+													<p:tooltip id="badWeathertoolTipTrack" for="badWeather"
+														value="#{loc.BAD_WEATHER_ANNUOUNCEMENT_MESSAGE}"
+														trackMouse="true" showEffect="clip" hideEffect="explode" />
+													<p:panel id="niceWeather" style="border:none !important"
+														rendered="#{ event.weatherStatus.isBadWeather != 1}">
+														<center>
+															<img src="resources/images/smile.png" width="30"
+																height="30" />
+														</center>
+													</p:panel>
+													<p:tooltip id="niceWeathertoolTipTrack" for="niceWeather"
+														value="#{loc.GOOD_WEATHER_ANNUOUNCEMENT_MESSAGE}"
+														showEffect="clip" hideEffect="explode" trackMouse="true" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_LOCALTION}">
+													<p:commandButton id="btn5" type="button"
+														icon="ui-icon-pin-s" value="Show Map"
+														onclick="PF('dlg15').show();" />
+
+													<p:dialog id="gmapDialog5" widgetVar="dlg15" width="625"
+														showEffect="bounce" hideEffect="explode" height="400">
+														<p:gmap id="gmap"
+															center="#{event.lat.concat(',').concat(event.lon) }"
+															zoom="15" type="HYBRID" style="width:100%;height:400px" />
+													</p:dialog>
+												</p:column>
+												<p:column headerText="#{loc.GENERAL_ACTION}">
+												<p:commandButton value="#{loc.ADD_EVENT_EDIT_EVENT}"
+														immediate="true" update=" @form "
+														actionListener="#{homeHandlerBean.editEvent(event)}" />
+														
+													<p:commandButton value="#{loc.ADD_EVENT_DELETE_EVENT}"
+														immediate="true" update=" @form "
+														actionListener="#{homeHandlerBean.deleteEvent(event)}">
+
+														<p:confirm header="Confirmation" message="Are you sure?"
+															icon="ui-icon-alert" />
+													</p:commandButton>
+													<p:confirmDialog global="true" showEffect="fade"
+														hideEffect="explode">
+														<p:commandButton value="Yes" type="button"
+															styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+														<p:commandButton value="No" type="button"
+															styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+													</p:confirmDialog>
+												</p:column>
+
+											</p:dataTable>
+										</p:tab>
+										<p:tab title="#{loc.INTERCEPTING_EVENTED_USER_INVITED_IN}"
+											rendered="#{homeHandlerBean.eventsCurrentUserInvietedIn.size()>0}">
+											<p:dataTable var="event"
+												widgetVar="eventsCurrentUserInvietedIn"
+												value="#{homeHandlerBean.eventsCurrentUserInvietedIn}">
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_TITLE}">
+													<p:outputLabel value="#{event.eventTitle}" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_CREATOR}">
+													<p:outputLabel value="#{event.creator.email}" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_START_DATE}">
+													<p:outputLabel value="#{event.startDate}">
+														<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+													</p:outputLabel>
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_END_DATE}">
+													<p:outputLabel value="#{event.endDate}">
+														<f:convertDateTime pattern="MM/dd/yyyy HH:mm" />
+													</p:outputLabel>
+												</p:column>
+												<p:column headerText="#{loc.DESCRIPTION}">
+													
+													<p:panel id="desc1" style="border:none !important"
+														rendered="#{ event.description!=null }">
+														<center>
+															<img src="resources/images/exclamation-mark.png" width="30"
+																height="30" />
+														</center>
+														<p:tooltip for="desc1"
+														value="#{event.description}"
+														showEffect="clip" hideEffect="explode"  />	
+														</p:panel>
+												</p:column>
+												
+												<p:column headerText="#{loc.WEATHER_STATUS}">
+													<p:panel id="badWeather" style="border:none !important"
+														rendered="#{ event.weatherStatus.isBadWeather eq 1}">
+														<center>
+															<img src="resources/images/sad.png" width="30"
+																height="30" />
+														</center>
+													</p:panel>
+													<p:tooltip id="badWeathertoolTipTrack" for="badWeather"
+														value="#{loc.BAD_WEATHER_ANNUOUNCEMENT_MESSAGE}"
+														trackMouse="true" showEffect="clip" hideEffect="explode" />
+													<p:panel id="niceWeather" style="border:none !important"
+														rendered="#{ event.weatherStatus.isBadWeather != 1}">
+														<center>
+															<img src="resources/images/smile.png" width="30"
+																height="30" />
+														</center>
+													</p:panel>
+													<p:tooltip id="niceWeathertoolTipTrack" for="niceWeather"
+														value="#{loc.GOOD_WEATHER_ANNUOUNCEMENT_MESSAGE}"
+														showEffect="clip" hideEffect="explode" trackMouse="true" />
+												</p:column> 
+												<p:column headerText="#{loc.GENERAL_ACTION}">
+													<p:commandButton value="#{loc.ADD_EVENT_JOIN_EVENT}" rendered="#{homeHandlerBean.isMemberAcceptedInvitation(event)==false}"
+														immediate="true" update=" @form "
+														actionListener="#{homeHandlerBean.joinEvent(event)}">
+
+													</p:commandButton>
+
+													<p:commandButton value="#{loc.ADD_EVENT_UNJOIN_EVENT}"
+														immediate="true" update=" @form "
+														actionListener="#{homeHandlerBean.unsubscribeEvent(event)}">
+														<p:confirm header="Confirmation" message="Are you sure?"
+															icon="ui-icon-alert" />
+													</p:commandButton>
+													<p:confirmDialog showEffect="fade" global="true"
+														hideEffect="explode">
+														<p:commandButton value="Yes" type="button"
+															styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+														<p:commandButton value="No" type="button"
+															styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+													</p:confirmDialog>
+												</p:column>
+
+											</p:dataTable>
+										</p:tab>
+									</p:tabView>
+									<p:tabView>
+
+										<p:tab title="#{loc.ALL_FUTIRE_EVENTS}">
+											<p:panelGrid columns="7">
+												<p:outputLabel value="#{loc.START_DATE}" />
+												<p:calendar id="startDate"
+													value="#{homeHandlerBean.startDate}"
+													mindate="#{homeHandlerBean.minStartDate}"
+													pattern="MM/dd/yyyy HH:mm" />
+												<p:outputLabel value="#{loc.END_DATE}" />
+												<p:calendar id="endDate"
+													value="#{homeHandlerBean.endDate}"
+													mindate="#{homeHandlerBean.minStartDate}"
+													pattern="MM/dd/yyyy HH:mm" />
+
+												<p:outputLabel value="#{loc.ADD_EVENT_EVENT_TYPE}" />
+												
+													<p:selectOneMenu effect="bounce"
+														value="#{homeHandlerBean.eventType}"
+														converter="#{genericMarkedEntityConverter}">
+
+														<f:selectItems value="#{homeHandlerBean.eventTypes}"
+															var="eventType" itemLabel="#{eventType.name}"
+															itemValue="#{eventType}" />
+													</p:selectOneMenu>
+  
+
+													<p:commandButton value="Search"
+														actionListener="#{homeHandlerBean.searchFutureEvents()}"
+														update="futureEvents startDate endDate" />
+											</p:panelGrid>
+
+											<p:dataTable id="futureEvents"
+												value="#{homeHandlerBean.futureEvents}" var="event">
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_TITLE}"
+													filterBy="#{event.eventTitle}" filterMatchMode="contains">
+													<p:outputLabel value="#{event.eventTitle}" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_CREATOR}"
+													filterBy="#{event.eventTitle}" filterMatchMode="contains">
+													<p:outputLabel value="#{event.creator.email}" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_START_DATE}">
+													<p:outputLabel value="#{event.startDate}">
+														<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+													</p:outputLabel>
+												</p:column>
+												<p:column headerText="#{loc.DESCRIPTION}">
+													
+													<p:panel id="desc3" style="border:none !important"
+														rendered="#{ event.description!=null }">
+														<center>
+															<img src="resources/images/exclamation-mark.png" width="30"
+																height="30" />
+														</center>
+														<p:tooltip for="desc3"
+														value="#{event.description}"
+														showEffect="clip" hideEffect="explode"  />	
+														</p:panel>
+												</p:column>
+												<p:column headerText="#{loc.WEATHER_STATUS}">
+													<p:panel id="badWeather" style="border:none !important"
+														rendered="#{ event.weatherStatus.isBadWeather eq 1}">
+														<center>
+															<img src="resources/images/sad.png" width="30"
+																height="30" />
+														</center>
+													</p:panel>
+													<p:tooltip id="badWeathertoolTipTrack" for="badWeather"
+														value="#{loc.BAD_WEATHER_ANNUOUNCEMENT_MESSAGE}"
+														trackMouse="true" showEffect="clip" hideEffect="explode" />
+													<p:panel id="niceWeather" style="border:none !important"
+														rendered="#{ event.weatherStatus.isBadWeather != 1}">
+														<center>
+															<img src="resources/images/smile.png" width="30"
+																height="30" />
+														</center>
+													</p:panel>
+													<p:tooltip id="niceWeathertoolTipTrack" for="niceWeather"
+														value="#{loc.GOOD_WEATHER_ANNUOUNCEMENT_MESSAGE}"
+														showEffect="clip" hideEffect="explode" trackMouse="true" />
+												</p:column>
+												<p:column headerText="#{loc.ADD_EVENT_EVENT_LOCALTION}">
+													<p:commandButton id="btn" type="button"
+														icon="ui-icon-pin-s" value="Show Map"
+														onclick="PF('dlg1').show();" />
+
+													<p:dialog id="gmapDialog" widgetVar="dlg1" width="625"
+														showEffect="bounce" hideEffect="explode" height="400">
+														<p:gmap id="gmap"
+															center="#{event.lat.concat(',').concat(event.lon) }"
+															zoom="15" type="HYBRID" style="width:100%;height:400px" />
+													</p:dialog>
+												</p:column>
+												<p:column headerText="#{loc.GENERAL_ACTION}">
+													<p:commandButton value="#{loc.ASK_TO_JOIN}" actionListener="#{homeHandlerBean.askToJoinEvent(event)}" update="futureEvents :growlForm"/>
+												</p:column>
+
+											</p:dataTable>
+										</p:tab>
+
+									</p:tabView>
+								</h:panelGrid>
+							</p:fieldset>
+							<p:growl />
+						</h:form></td>
+				</tr>
+			</table>
+		</center>
+
+	</ui:define>
+</ui:composition>

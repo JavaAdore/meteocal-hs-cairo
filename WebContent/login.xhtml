@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css" />
+	<title>#{loc.LOGIN_PAGE_TITLE}</title>
+
+</h:head>
+<h:body>
+
+	<div id="header">
+		<div style="color: red; font-style: italic; font-weight: bold">METEOCAL
+		</div>
+		<div style="font-size: small;">&ensp;&ensp;&ensp;&ensp;&ensp;</div>
+	</div>
+	<div id="background">
+		<p:graphicImage name="background.png" library="images"
+			styleClass="stretch" />
+	</div>
+
+
+	<h:form id="form">
+		<p:growl />
+
+		<p:fieldset style="position:absolute; left:150px; top:180px;"
+			legend="#{loc.LOGIN_PAGE_TITLE}">
+			<center>
+				<p:panelGrid id="idPanellogin" style="border:none;">
+					<p:row>
+						<p:column>
+							<p:outputLabel value="#{loc.usernameLbl}" />
+						</p:column>
+						<p:column colspan="2">
+							<p:inputText id="email" value="#{loginBean.email}"
+								required="true"
+								requiredMessage="#{loc.GENERAL_EMAIL_IS_REQUIRED}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column>
+							<p:outputLabel value="#{loc.passwordLbl}" />
+						</p:column>
+						<p:column colspan="2">
+							<p:password id="pass" value="#{loginBean.password}"
+								required="true"
+								requiredMessage="#{loc.GENERAL_PASSOWRD_IS_REQURED}" />
+						</p:column>
+					</p:row>
+					<p:row>
+						<p:column colspan="2" style="text-align:center;">
+							<p:commandButton id="submit" value="#{loc.login}" update="@form"
+								actionListener="#{loginBean.login()}" />
+						</p:column>
+						<p:column colspan="2" style="text-align:center;">
+							<p:commandButton id="reg" value="#{loc.NEW_USER}"
+								immediate="true" ajax="false"
+								action="register.xhtml?faces-redirect=true" />
+						</p:column>
+					</p:row>
+					<!--   								<p:row> -->
+					<!--     								<p:column colspan="2" style="text-align:center;"> -->
+					<!--     									<p:commandLink href="#" value="#{loc.forgetPassTxt}" actionListener="#{testBean.execute()}"/> -->
+					<!--     								</p:column> -->
+					<!--   								</p:row> -->
+				</p:panelGrid>
+			</center>
+		</p:fieldset>
+	</h:form>
+</h:body>
+</html>

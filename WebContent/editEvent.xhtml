@@ -1,0 +1,275 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="template/homeTemplate.xhtml">
+
+	<ui:define name="title">
+		<title>#{loc.EDIT_EVENT_TITLE}</title>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<script>
+	function initialize() {
+	  var input =(document.getElementById('eventForm:location'));
+	var x = google.maps.places;
+		
+	  var autocomplete = new google.maps.places.Autocomplete(input);
+
+	google.maps.event.addListener(autocomplete, 'place_changed', function() {
+	    var place = autocomplete.getPlace();
+	     
+			var location = place.geometry.location;
+			PF('gmap').getMap().setCenter(location);
+			PF('gmap').getMap().setZoom(17)
+		});
+		}
+	   
+	</script>
+
+		<h:form id="eventForm">
+			<p:fieldset legend="#{loc.EDIT_EVENT_TITLE}" toggleable="true">
+				<center>
+					<p:panelGrid styleClass="noBorder">
+						<p:row>
+							<p:column>
+								<p:outputLabel value="#{loc.ADD_EVENT_EVENT_TITLE}" />
+							</p:column>
+							<p:column>
+								<p:inputText value="#{editEventHandlerBean.eventTitle}"
+									requiredMessage="#{loc.ADD_EVENT_EVENT_TITLE_IS_REQUIRED}"
+									required="true" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="#{loc.ADD_EVENT_EVENT_TYPE}" />
+							</p:column>
+							<p:column>
+								<p:selectOneMenu value="#{editEventHandlerBean.eventType}"  effect="drop"    style="min-width: 200px"  required="true" 									converter="#{genericMarkedEntityConverter}"
+									converterMessage="#{loc.ERROR_RELARED_TO_EVENT_TYPE}">                  	
+                     <f:selectItems  value="#{editEventHandlerBean.eventTypes}"  var="eventType" itemLabel="#{eventType.name}" itemValue="#{eventType}"/>
+                 </p:selectOneMenu> 
+
+
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+
+								<p:outputLabel value="#{loc.ADD_EVENT_EVENT_START_DATE}" />
+							</p:column>
+
+							<p:column>
+								<p:calendar value="#{editEventHandlerBean.startDate}"
+									pattern="MM/dd/yyyy HH:mm"
+									requiredMessage="#{loc.ADD_EVENT_EVENT_START_DATE_IS_REQUIRED}"
+									required="true" mindate="#{editEventHandlerBean.today}" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel value="#{loc.ADD_EVENT_EVENT_END_DATE}" />
+							</p:column>
+
+							<p:column>
+								<p:calendar value="#{editEventHandlerBean.endDate}"
+									pattern="MM/dd/yyyy HH:mm"
+									requiredMessage="#{loc.ADD_EVENT_EVENT_END_DATE_IS_REQUIRED}"
+									required="true" mindate="#{editEventHandlerBean.today}" />
+							</p:column>
+
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:outputLabel
+									value="#{loc.ADD_EVENT_EVENT_LAST_AVAILABLE_DATE_TO_ACCEPT_OR_INVITE_OTHER}" />
+							</p:column>
+
+							<p:column>
+								<p:calendar
+									value="#{editEventHandlerBean.lastAvailableTimeToAcceptOrInvite}"
+									pattern="MM/dd/yyyy HH:mm"
+									requiredMessage="#{loc.ADD_EVENT_EVENT_LAST_AVAILABLE_DATE_IS_REQUIRED}"
+									required="true" mindate="#{editEventHandlerBean.today}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column>
+								<h:form>
+									<p:selectBooleanCheckbox id="setBadWeather"
+										value="#{editEventHandlerBean.setBadWeather}">
+										<p:ajax update=":eventForm :growlForm" immediate="true"
+											process="@form" />
+									</p:selectBooleanCheckbox>
+									<p:outputLabel value="#{loc.BAD_WEATHER}" />
+								</h:form>
+							</p:column>
+
+							<p:column>
+							<h:form>
+								<p:selectOneMenu effect="fold" id="badWeatherComboBox"
+									widgetVar="badWeatherComboBox" 
+									rendered="#{editEventHandlerBean.setBadWeather}" var="item"
+									value="#{editEventHandlerBean.badWeather}" required="true"
+									requiredMessage="#{loc.SELECT_BAD_WEATHER}"
+									converter="#{genericMarkedEntityConverter}"
+									converterMessage="#{loc.ERROR_RELARED_TO_BAD_WEATHER}">
+									<f:selectItems value="#{editEventHandlerBean.badWeathers}" 
+										var="badWeather" itemLabel="#{badWeather.name}"
+										itemValue="#{badWeather}" />
+										<p:ajax   event="change"   update=":detailedGrowl" listener="#{editEventHandlerBean.selectionChange()}" ></p:ajax>
+								</p:selectOneMenu>
+								</h:form>
+							</p:column>
+						
+						</p:row>
+
+						<p:row>
+							<p:column> 
+								<p:outputLabel value="#{loc.DESCRIPTION}" />
+							</p:column>
+
+							<p:column>
+								<p:inputTextarea value="#{editEventHandlerBean.description}" />
+							</p:column>
+						</p:row>
+
+						<p:row>
+							<p:column colspan="2">
+
+								<p:outputLabel value="#{loc.ADD_EVENT_CHOOSE_EVENT_LOCATION}" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="2">
+
+								<p:gmap id="gmap" binding="#{editEventHandlerBean.gmap}"
+									center="#{editEventHandlerBean.latlng.lat} ,  #{editEventHandlerBean.latlng.lng}" zoom="15" widgetVar="gmap"
+									type="ROADMAP" style="width:100%;height:400px">
+									<p:ajax event="stateChange"
+										listener="#{editEventHandlerBean.onStateChange}"
+										update=":growlForm" />
+									<p:ajax event="pointSelect"
+										listener="#{editEventHandlerBean.onPointSelect}"
+										update=":growlForm" />
+								</p:gmap>
+							</p:column>
+
+						</p:row>
+						<p:row>
+							<p:column>
+								<p:inputText id="location" styleClass="location" />
+							</p:column>
+							<p:column> 
+								<p:commandButton value="#{loc.ADD_EVENT_EDIT_EVENT}"
+									actionListener="#{editEventHandlerBean.addEvent(false)}"
+									update=":growlForm" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+
+
+					<p:remoteCommand name="update" update="tableView" />
+					<p:dialog header="#{loc.ADD_EVENT_INTERCECTIONS}"
+						widgetVar="interceptionDialog" onShow="update()" showEffect="fold"
+						hideEffect="fold" height="300">
+						<p:commandButton value="#{loc.ADD_EVENT_ADD_ANY_WAY}"
+							update=":growlForm"
+							actionListener="#{editEventHandlerBean.addEvent(true)}" />
+						<p:tabView id="tableView">
+							<p:tab title="#{loc.INTERCEPTING_EVENTED_CREATED_BY_OWNER}"
+								rendered="#{editEventHandlerBean.intersectionWithEventsCreatedByMember.size()>0}">
+								<p:dataTable var="event"
+									value="#{editEventHandlerBean.intersectionWithEventsCreatedByMember}">
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_TITLE}">
+										<p:outputLabel value="#{event.eventTitle}" />
+									</p:column>
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_TYPE}">
+										<p:outputLabel value="#{event.eventType.name}" />
+									</p:column>
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_START_DATE}">
+										<p:outputLabel value="#{event.startDate}">
+											<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_END_DATE}">
+										<p:outputLabel value="#{event.startDate}">
+											<f:convertDateTime pattern="MM/dd/yyyy HH:mm" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="#{loc.GENERAL_ACTION}">
+										<p:commandButton value="#{loc.ADD_EVENT_DELETE_EVENT}"
+											immediate="true" oncomplete="update()"
+											actionListener="#{editEventHandlerBean.deleteEvent(event)}">
+
+											<p:confirm header="Confirmation" message="Are you sure?"
+												icon="ui-icon-alert" />
+										</p:commandButton>
+										<p:confirmDialog global="true" showEffect="fade"
+											hideEffect="explode">
+											<p:commandButton value="Yes" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</p:confirmDialog>
+									</p:column>
+
+								</p:dataTable>
+							</p:tab>
+							<p:tab title="#{loc.INTERCEPTING_EVENTED_USER_INVITED_IN}"
+								rendered="#{editEventHandlerBean.intersectionWithEventsUserInvitedIn.size()>0}">
+								<p:dataTable var="event"
+									value="#{editEventHandlerBean.intersectionWithEventsUserInvitedIn}">
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_TITLE}">
+										<p:outputLabel value="#{event.eventTitle}" />
+									</p:column>
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_TYPE}">
+										<p:outputLabel value="#{event.eventType.name}" />
+									</p:column>
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_START_DATE}">
+										<p:outputLabel value="#{event.startDate}">
+											<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="#{loc.ADD_EVENT_EVENT_END_DATE}">
+										<p:outputLabel value="#{event.startDate}">
+											<f:convertDateTime pattern="MM/dd/yyyy HH:mm" />
+										</p:outputLabel>
+									</p:column>
+									<p:column headerText="#{loc.GENERAL_ACTION}">
+										<p:commandButton value="#{loc.ADD_EVENT_UNJOIN_EVENT}"
+											immediate="true" oncomplete="update()"
+											actionListener="#{editEventHandlerBean.unsubscribeEvent(event)}">
+											<p:confirm header="Confirmation" message="Are you sure?"
+												icon="ui-icon-alert" />
+										</p:commandButton>
+										<p:confirmDialog global="true" showEffect="fade"
+											hideEffect="explode">
+											<p:commandButton value="Yes" type="button"
+												styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+											<p:commandButton value="No" type="button"
+												styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+										</p:confirmDialog>
+									</p:column>
+
+								</p:dataTable>
+							</p:tab>
+						</p:tabView>
+
+					</p:dialog>
+					<p:outputLabel 
+						value="#{editEventHandlerBean.intersectionWithEventsCreatedByMember.size()}" />
+					<p:defaultCommand target="eventForm"></p:defaultCommand>
+				</center>
+			</p:fieldset>
+		</h:form>
+
+
+
+		<script>initialize()</script>
+	</ui:define>
+</ui:composition>

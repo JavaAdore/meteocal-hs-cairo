@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css" />
+	<title>#{loc.REGISTRATION_PAGE_TITLE}</title>
+
+</h:head>
+<h:body>
+
+	<div id="header">
+		<div style="color: red; font-style: italic; font-weight: bold">METEOCAL
+		</div>
+		<div style="font-size: small;">&ensp;&ensp;&ensp;&ensp;&ensp;</div>
+	</div>
+	<div id="background">
+		<p:graphicImage name="background.png" library="images"
+			styleClass="stretch" />
+	</div>
+
+
+
+	<center>
+		<table border="0" dir="#{loc.dir}">
+			<tr>
+				<td><h:form id="form" enctype="multipart/form-data">
+						<p:fieldset legend="#{loc.regSignUpLbl}"
+							style="margin-bottom:20px;align:right;">
+							<center>
+								<p:panelGrid id="idPanellogin" style="border:none;">
+									<p:row>
+										<p:column>
+											<p:outputLabel value="#{loc.regNameLbl}" />
+										</p:column>
+										<p:column>
+											<p:inputText id="name" value="#{registerationBean.firstName}"
+												required="true"
+												requiredMessage="#{loc.GENERAL_FIRST_NAME_IS_REQUIRED}" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:outputLabel value="#{loc.regFamilyLbl}" />
+										</p:column>
+										<p:column>
+											<p:inputText id="family"
+												value="#{registerationBean.lastName}" required="true"
+												requiredMessage="#{loc.GENERAL_LAST_NAME_IS_REQUIRED}" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:outputLabel value="#{loc.regEmailLbl}" />
+										</p:column>
+										<p:column>
+											<p:inputText id="email" value="#{registerationBean.email}"
+												required="true" validator="emailValidator"
+												requiredMessage="#{loc.GENERAL_EMAIL_IS_REQUIRED}"
+												validatorMessage="#{loc.PLEASE_ENTER_VALID_EMAIL}" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:outputLabel value="#{loc.regPassLbl}" />
+										</p:column>
+										<p:column>
+											<p:password id="pass" value="#{registerationBean.password}"
+												requiredMessage="#{loc.GENERAL_PASSWORD_IS_REQUIRED}"
+												required="true" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:outputLabel value="#{loc.regConfirmPassLbl}" />
+										</p:column>
+										<p:column>
+											<p:password id="confirmPass"
+												value="#{registerationBean.confirmPass}" required="true"
+												requiredMessage="#{loc.GENERAL_CONFIRM_PASSWORD_IS_REQUIRED}" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column>
+											<p:outputLabel value="#{loc.regUserIamge}" />
+										</p:column>
+										<p:column>
+											<p:fileUpload value="#{registerationBean.userImage}"
+												mode="simple" allowTypes="/(\.|\/)(gif|jpe?g|png)$/i" />
+										</p:column>
+									</p:row>
+									<p:row>
+										<p:column colspan="2" style="text-align:right;">
+											<center>
+												<p:commandButton id="submit" value="#{loc.regButt}"
+													ajax="false" update=":growlForm"
+													actionListener="#{registerationBean.register()}" />
+											</center>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+							</center>
+						</p:fieldset>
+					</h:form></td>
+			</tr>
+		</table>
+	</center>
+</h:body>
+</html>

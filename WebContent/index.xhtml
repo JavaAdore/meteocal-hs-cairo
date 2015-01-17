@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet library="css" name="style.css" />
+	<style>
+.ui-datatable tbody td {
+	color: white !important;
+}
+.ui-datatable tbody td
+{	color: white !important;
+	background-color : rgba(0,0,0,.8)!important;
+}
+</style>
+
+	<script
+		src="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false&amp;libraries=places">
+		
+		
+		</script>
+		
+</h:head>
+<h:body>
+
+
+	<div id="header">
+		<div style="color: red; font-style: italic; font-weight: bold">METEOCAL
+		</div>
+		<div style="font-size: small;">&ensp;&ensp;&ensp;&ensp;&ensp;</div>
+	</div>
+	<div id="background">
+		<p:graphicImage name="background.png" library="images"
+			styleClass="stretch" />
+	</div>
+
+	<div
+		style="width: 100%; bborder: 2px solid red; background: black; color: yellow; position: absolute; top: 0px; left: 0px;">
+		<h:form>
+			<span style="position: absolute !important; right: 50px !important">
+				<p:commandLink value=" #{loc.regButt}" action="register.xhtml"
+					ajax="false" immediate="true" style="color:white !important;" /> <p:outputLabel
+					value="    " /> <p:commandLink value="#{loc.LOGIN_PAGE_TITLE} "
+					action="login.xhtml" ajax="false" immediate="true"
+					style="color:white !important;" />
+			</span>
+		</h:form>
+	</div>
+
+
+
+	<h:form>
+			#{helperBean.redirectIfLogin()}
+	<p:growl id="growl" />
+		<p:contentFlow value="#{imagesViewBean.images}" var="image">
+			<p:graphicImage name="images/prototype/#{image}" styleClass="content" />
+			<div class="caption">#{image}</div>
+		</p:contentFlow>
+		<p:panel
+			style="position:absolute !important;  top:400px !important; border:2px solid red; margin-left:auto !important; margin-right:auto !important;">
+			<p:panelGrid columns="7"
+				style="margin-left:auto !important; margin-right:auto !important;">
+				<p:outputLabel value="#{loc.START_DATE}" />
+				<p:calendar id="startDate" value="#{indexBeanHandler.startDate}"
+					mindate="#{indexBeanHandler.minStartDate}"
+					pattern="MM/dd/yyyy HH:mm" />
+				<p:outputLabel value="#{loc.END_DATE}" />
+				<p:calendar id="endDate" value="#{indexBeanHandler.endDate}"
+					mindate="#{indexBeanHandler.minEndDate}" pattern="MM/dd/yyyy HH:mm" />
+
+				<p:outputLabel value="#{loc.ADD_EVENT_EVENT_TYPE}" />
+
+			
+				
+				<p:selectOneMenu value="#{indexBeanHandler.eventType}"  effect="drop" id="addBookmarkMenu"   style="min-width: 200px"  required="true" converter="#{genericMarkedEntityConverter}"
+									converterMessage="#{loc.ERROR_RELARED_TO_EVENT_TYPE}">                  	
+                     <f:selectItems  value="#{indexBeanHandler.eventTypes}"  var="eventType" itemLabel="#{eventType.name}" itemValue="#{eventType}" />
+                 </p:selectOneMenu> 
+
+
+				<p:commandButton value="Search"
+					actionListener="#{indexBeanHandler.searchFutureEvents()}"
+					update="@form" />
+
+			</p:panelGrid>
+			<p:dataTable id="futureEvents"
+				value="#{indexBeanHandler.futureEvents}" var="event" rows="10"
+                         paginator="true" paginatorPosition="top"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"   >
+				<p:column headerText="#{loc.ADD_EVENT_EVENT_TITLE}"
+					filterBy="#{event.eventTitle}" filterMatchMode="contains">
+					<p:outputLabel value="#{event.eventTitle}" />
+				</p:column>
+				<p:column headerText="#{loc.ADD_EVENT_EVENT_CREATOR}"
+					filterBy="#{event.eventTitle}" filterMatchMode="contains">
+					<p:outputLabel value="#{event.creator.email}" />
+				</p:column>
+				<p:column headerText="#{loc.ADD_EVENT_EVENT_START_DATE}">
+					<p:outputLabel value="#{event.startDate}">
+						<f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+					</p:outputLabel>
+				</p:column>
+				<p:column headerText="#{loc.DESCRIPTION}">
+
+					<p:panel id="desc3" style="border:none !important"
+						rendered="#{ event.description!=null }">
+						<center>
+							<img src="resources/images/exclamation-mark.png" width="30"
+								height="30" />
+						</center>
+						<p:tooltip for="desc3" value="#{event.description}"
+							showEffect="clip" hideEffect="explode" />
+					</p:panel>
+				</p:column>
+				<p:column headerText="#{loc.WEATHER_STATUS}">
+					<p:panel id="badWeather" style="border:none !important"
+						rendered="#{ event.weatherStatus.isBadWeather eq 1}">
+						<center>
+							<img src="resources/images/sad.png" width="30" height="30" />
+						</center>
+					</p:panel>
+					<p:tooltip id="badWeathertoolTipTrack" for="badWeather"
+						value="#{loc.BAD_WEATHER_ANNUOUNCEMENT_MESSAGE}" trackMouse="true"
+						showEffect="clip" hideEffect="explode" />
+					<p:panel id="niceWeather" style="border:none !important"
+						rendered="#{ event.weatherStatus.isBadWeather != 1}">
+						<center>
+							<img src="resources/images/smile.png" width="30" height="30" />
+						</center>
+					</p:panel>
+					<p:tooltip id="niceWeathertoolTipTrack" for="niceWeather"
+						value="#{loc.GOOD_WEATHER_ANNUOUNCEMENT_MESSAGE}"
+						showEffect="clip" hideEffect="explode" trackMouse="true" />
+				</p:column>
+							<p:column headerText="#{loc.ADD_EVENT_EVENT_LOCALTION}">
+								<p:commandButton id="btn" type="button" icon="ui-icon-pin-s"
+									value="Show Map" onclick="PF('dlg1').show();" />
+
+								<p:dialog id="gmapDialog" widgetVar="dlg1" width="625"
+									showEffect="bounce" hideEffect="explode" height="400">
+									<p:gmap id="gmap"
+										center="#{event.lat.concat(',').concat(event.lon) }" zoom="15"
+										type="HYBRID" style="width:100%;height:400px" />
+								</p:dialog>
+							</p:column>
+				<p:column headerText="#{loc.GENERAL_ACTION}">
+					<p:commandButton value="#{loc.ASK_TO_JOIN}"
+						actionListener="#{indexBeanHandler.askToJoinEvent(event)}"
+						update=" @form" />
+				</p:column>
+
+			</p:dataTable>
+			
+
+
+		</p:panel>
+	</h:form>
+
+</h:body>
+</html>
