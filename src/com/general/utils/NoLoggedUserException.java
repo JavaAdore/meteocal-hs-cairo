@@ -18,7 +18,6 @@ public class NoLoggedUserException extends RuntimeException  implements Serializ
 	}
 
 	public NoLoggedUserException() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getMessageKey() {
