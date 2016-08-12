@@ -1,3 +1,4 @@
+
 package com.general.utils;
 
 import java.io.Serializable;
@@ -18,6 +19,8 @@ public class NoLoggedUserException extends RuntimeException  implements Serializ
 	}
 
 	public NoLoggedUserException() {
+		// TODO Auto-generated constructor stub test conflect
+
 	}
 
 	public String getMessageKey() {
